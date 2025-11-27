@@ -1,6 +1,4 @@
-        function saveNotificationSettings() {
-            alert('✅ Notification settings saved successfully!');
-        }<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -593,20 +591,20 @@
                     <div class="dashboard-card" style="max-width: 600px; margin: 0 auto 20px;">
                         <h3>🏪 Store Settings</h3>
                         <div style="margin: 20px 0;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Store Name</label>
-                            <input type="text" id="storeName" value="Emi's Sari Sari Store" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; color: #222;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Store Name</label>
+                            <input type="text" id="storeName" value="Emi's Sari Sari Store" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em;">
                         </div>
                         <div style="margin: 20px 0;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Welcome Message</label>
-                            <textarea id="welcomeMsg" rows="3" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; color: #222;">👋 Hello! Welcome to Emi's Sari Sari Store! I'm your 24/7 assistant. How can I help you today?</textarea>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Welcome Message</label>
+                            <textarea id="welcomeMsg" rows="3" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em;">👋 Hello! Welcome to Emi's Sari Sari Store! I'm your 24/7 assistant. How can I help you today?</textarea>
                         </div>
                         <div style="margin: 20px 0;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Delivery Fee (for orders below ₱500)</label>
-                            <input type="number" id="deliveryFee" value="50" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; color: #222;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Delivery Fee (for orders below ₱500)</label>
+                            <input type="number" id="deliveryFee" value="50" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em;">
                         </div>
                         <div style="margin: 20px 0;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Free Delivery Minimum</label>
-                            <input type="number" id="freeDeliveryMin" value="500" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; color: #222;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Free Delivery Minimum</label>
+                            <input type="number" id="freeDeliveryMin" value="500" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em;">
                         </div>
                         <button onclick="saveStoreSettings()" style="padding: 12px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%;">Save Store Settings</button>
                     </div>
@@ -614,20 +612,20 @@
                     <div class="dashboard-card" style="max-width: 600px; margin: 0 auto;">
                         <h3>🔔 Notification Settings</h3>
                         <div style="margin: 20px 0;">
-                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #333;">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                                 <input type="checkbox" id="notifyNewOrder" checked style="width: 20px; height: 20px;">
                                 <span>Notify on new orders</span>
                             </label>
                         </div>
                         <div style="margin: 20px 0;">
-                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #333;">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                                 <input type="checkbox" id="notifyLowStock" checked style="width: 20px; height: 20px;">
                                 <span>Alert when stock is low</span>
                             </label>
                         </div>
                         <div style="margin: 20px 0;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Notification Mobile Number</label>
-                            <input type="text" id="notifyNumber" value="09289258127" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; color: #222;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Notification Mobile Number</label>
+                            <input type="text" id="notifyNumber" value="09289258127" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em;">
                         </div>
                         <button onclick="saveNotificationSettings()" style="padding: 12px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%;">Save Notification Settings</button>
                     </div>
@@ -678,54 +676,8 @@
             alert('✅ Store settings saved successfully!');
         }
 
-        function saveProductSettings() {
-            // Update all products
-            products.rice.price = parseFloat(document.getElementById('price_rice').value);
-            products.rice.stock = parseInt(document.getElementById('stock_rice').value);
-            products.rice.unit = document.getElementById('unit_rice').value;
-            
-            products.oil.price = parseFloat(document.getElementById('price_oil').value);
-            products.oil.stock = parseInt(document.getElementById('stock_oil').value);
-            products.oil.unit = document.getElementById('unit_oil').value;
-            
-            products.sugar.price = parseFloat(document.getElementById('price_sugar').value);
-            products.sugar.stock = parseInt(document.getElementById('stock_sugar').value);
-            products.sugar.unit = document.getElementById('unit_sugar').value;
-            
-            products.noodles.price = parseFloat(document.getElementById('price_noodles').value);
-            products.noodles.stock = parseInt(document.getElementById('stock_noodles').value);
-            products.noodles.unit = document.getElementById('unit_noodles').value;
-            
-            // Update inventory display in dashboard
-            updateInventoryDisplay();
-            
-            alert('✅ All product prices and stock updated successfully!');
-        }
-
-        function updateInventoryDisplay() {
-            const inventoryDiv = document.getElementById('productsInventory');
-            inventoryDiv.innerHTML = `
-                <div class="product-admin-card">
-                    <h4>${products.rice.name}</h4>
-                    <p style="font-size: 1.2em; font-weight: bold; color: #764ba2;">₱${products.rice.price}/${products.rice.unit}</p>
-                    <p style="color: #666;">Stock: ${products.rice.stock}${products.rice.unit}</p>
-                </div>
-                <div class="product-admin-card">
-                    <h4>${products.oil.name}</h4>
-                    <p style="font-size: 1.2em; font-weight: bold; color: #764ba2;">₱${products.oil.price}/${products.oil.unit}</p>
-                    <p style="color: ${products.oil.stock < 10 ? '#f57c00' : '#666'};">Stock: ${products.oil.stock}${products.oil.unit} ${products.oil.stock < 10 ? '⚠️' : ''}</p>
-                </div>
-                <div class="product-admin-card">
-                    <h4>${products.sugar.name}</h4>
-                    <p style="font-size: 1.2em; font-weight: bold; color: #764ba2;">₱${products.sugar.price}/${products.sugar.unit}</p>
-                    <p style="color: #666;">Stock: ${products.sugar.stock}${products.sugar.unit}</p>
-                </div>
-                <div class="product-admin-card">
-                    <h4>${products.noodles.name}</h4>
-                    <p style="font-size: 1.2em; font-weight: bold; color: #764ba2;">₱${products.noodles.price}/${products.noodles.unit}</p>
-                    <p style="color: #666;">Stock: ${products.noodles.stock} ${products.noodles.unit}</p>
-                </div>
-            `;
+        function saveNotificationSettings() {
+            alert('✅ Notification settings saved successfully!');
         }
 
         function addBotMessage(message, isHtml = false) {
