@@ -1,0 +1,949 @@
+        function saveNotificationSettings() {
+            alert('✅ Notification settings saved successfully!');
+        }<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emi's Sari Sari Store - Night Shift Bot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .app-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .mode-switcher {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .mode-btn {
+            padding: 8px 20px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .mode-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .view-container {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .view {
+            display: none;
+            height: 100%;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Customer Store View */
+        .customer-view {
+            background: white;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .store-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .store-header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .store-header p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .bot-message, .user-message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .bot-message {
+            background: #667eea;
+            color: white;
+            margin-right: auto;
+        }
+
+        .user-message {
+            background: #e0e0e0;
+            color: #333;
+            margin-left: auto;
+        }
+
+        .product-card-inline {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+        }
+
+        .product-card-inline h3 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .product-card-inline .price {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #764ba2;
+            margin: 8px 0;
+        }
+
+        .product-card-inline .stock {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .quick-btn {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .quick-btn:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .input-area {
+            padding: 15px;
+            background: white;
+            border-top: 2px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1em;
+        }
+
+        .input-area button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .input-area button:hover {
+            transform: scale(1.05);
+        }
+
+        .cart-summary {
+            background: #fff9c4;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .cart-summary h4 {
+            color: #f57c00;
+            margin-bottom: 8px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .cart-total {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 10px;
+            color: #764ba2;
+        }
+
+        /* Admin Dashboard */
+        .admin-view {
+            padding: 20px;
+            overflow-y: auto;
+            height: 100%;
+            padding-bottom: 40px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .dashboard-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .stat-big {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #764ba2;
+            margin: 10px 0;
+        }
+
+        .orders-list {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .order-item {
+            padding: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-new {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .status-processing {
+            background: #bbdefb;
+            color: #1976d2;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .product-admin-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-admin-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .mode-switcher {
+                padding: 8px 10px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .mode-buttons {
+                flex-wrap: wrap;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .mode-btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+
+            .store-header h1 {
+                font-size: 1.2em;
+            }
+
+            .chat-area {
+                padding: 15px;
+            }
+
+            .bot-message, .user-message {
+                max-width: 85%;
+                padding: 10px 14px;
+                font-size: 0.9em;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .stat-big {
+                font-size: 2em;
+            }
+
+            .admin-view {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <div class="mode-switcher">
+            <div style="font-weight: 600;">🏪 Emi's Sari Sari Store</div>
+            <div class="mode-buttons">
+                <button class="mode-btn active" onclick="switchMode('customer')">🛒 Customer View</button>
+                <button class="mode-btn" onclick="switchMode('admin')">📊 Dashboard</button>
+                <button class="mode-btn" onclick="switchMode('settings')">⚙️ Settings</button>
+            </div>
+        </div>
+
+        <div class="view-container">
+            <!-- Customer Store View -->
+            <div class="view active" id="customerView">
+                <div class="customer-view">
+                    <div class="store-header">
+                        <h1>🏪 Emi's Sari Sari Store</h1>
+                        <p>24/7 Night Shift Bot - Order Anytime!</p>
+                    </div>
+
+                    <div class="chat-area" id="chatArea">
+                        <div class="bot-message">
+                            👋 Hello! Welcome to Emi's Sari Sari Store! I'm your 24/7 assistant. How can I help you today?
+                            <div class="quick-actions">
+                                <button class="quick-btn" onclick="quickAction('Browse Products')">📦 Browse Products</button>
+                                <button class="quick-btn" onclick="quickAction('View Cart')">🛒 View Cart</button>
+                                <button class="quick-btn" onclick="quickAction('Check Delivery')">🚚 Delivery Info</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-area">
+                        <input type="text" id="userInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+                        <button onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Dashboard View -->
+            <div class="view" id="adminView">
+                <div class="admin-view">
+                    <h2 style="color: white; margin-bottom: 20px; text-align: center;">📊 Admin Dashboard</h2>
+                    
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <h3>💰 Today's Sales</h3>
+                            <div class="stat-big" id="todaySales">₱2,450</div>
+                            <p style="color: #666;">+15% from yesterday</p>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>📈 This Month</h3>
+                            <div class="stat-big" id="monthSales">₱105,230</div>
+                            <p style="color: #666;">On track for ₱150k</p>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>🛒 Active Orders</h3>
+                            <div class="stat-big" id="activeOrders">8</div>
+                            <p style="color: #666;">3 pending delivery</p>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>👥 Customers Today</h3>
+                            <div class="stat-big" id="customersToday">47</div>
+                            <p style="color: #666;">12 new customers</p>
+                        </div>
+                    </div>
+
+                    <div class="orders-list">
+                        <h3 style="color: #667eea; margin-bottom: 15px;">Recent Orders</h3>
+                        <div id="ordersList">
+                            <div class="order-item">
+                                <div>
+                                    <strong>Order #1001</strong>
+                                    <p style="color: #888; margin-top: 5px;">Maria Santos - 5kg Rice, 2L Oil</p>
+                                    <small style="color: #999;">Just now</small>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-weight: bold; color: #764ba2; margin-bottom: 5px;">₱580</div>
+                                    <span class="status-badge status-new">New Order</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="orders-list" style="margin-top: 20px;">
+                        <h3 style="color: #667eea; margin-bottom: 15px;">Products Inventory</h3>
+                        <div class="products-grid" id="productsInventory">
+                            <div class="product-admin-card">
+                                <h4>Premium Rice</h4>
+                                <p style="font-size: 1.2em; font-weight: bold; color: #764ba2;">₱58/kg</p>
+                                <p style="color: #666;">Stock: 150kg</p>
+                            </div>
+                            <div class="product-admin-card">
+                                <h4>Cooking Oil</h4>
+                                <p style="font-size: 1.2em; font-weight: bold; color: #764ba2;">₱135/L</p>
+                                <p style="color: #f57c00;">Stock: 8L ⚠️</p>
+                            </div>
+                            <div class="product-admin-card">
+                                <h4>Sugar</h4>
+                                <p style="font-size: 1.2em; font-weight: bold; color: #764ba2;">₱65/kg</p>
+                                <p style="color: #666;">Stock: 45kg</p>
+                            </div>
+                            <div class="product-admin-card">
+                                <h4>Instant Noodles</h4>
+                                <p style="font-size: 1.2em; font-weight: bold; color: #764ba2;">₱12/pack</p>
+                                <p style="color: #666;">Stock: 200 packs</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div class="view" id="settingsView">
+                <div class="admin-view">
+                    <h2 style="color: white; margin-bottom: 20px; text-align: center;">⚙️ Settings</h2>
+                    
+                    <div class="dashboard-card" style="max-width: 600px; margin: 0 auto 20px;">
+                        <h3>💳 GCash Payment Settings</h3>
+                        <div style="margin: 20px 0;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">GCash Number</label>
+                            <input type="text" id="gcashNumber" value="09289258127" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; color: #222;">
+                        </div>
+                        <div style="margin: 20px 0;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Account Name</label>
+                            <input type="text" id="gcashName" value="Emi's Sari Sari Store" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; color: #222;">
+                        </div>
+                        <button onclick="saveGCashSettings()" style="padding: 12px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%;">Save GCash Settings</button>
+                    </div>
+
+                    <div class="dashboard-card" style="max-width: 800px; margin: 0 auto 20px;">
+                        <h3>📦 Product Management</h3>
+                        <div id="productManagement">
+                            <div style="margin: 20px 0; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                                <h4 style="color: #333; margin-bottom: 15px;">Premium Rice</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                                    <div>
+                                        <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #333;">Price (₱)</label>
+                                        <input type="number" id="price_rice" value="58" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; color: #222;">
+                                    </div>
+                                    <div>
+                                        <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #333;">Stock</label>
+                                        <input type="number" id="stock_rice" value="150" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; color: #222;">
+                                    </div>
+                                    <div>
+                                        <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #333;">Unit</label>
+                                        <input type="text" id="unit_rice" value="kg" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; color: #222;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin: 20px 0; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                                <h4 style="color: #333; margin-bottom: 15px;">Cooking Oil</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                                    <div>
+                                        <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #333;">Price (₱)</label>
+                                        <input type="number" id="price_oil" value="135" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; color: #222;">
+                                    </div>
+                                    <div>
+                                        <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #333;">Stock</label>
+                                        <input type="number" id="stock_oil" value="8" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; color: #222;">
+                                    </div>
+                                    <div>
+                                        <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #333;">Unit</label>
+                                        <input type="text" id="unit_oil" value="L" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; color: #222;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin: 20px 0; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                                <h4 style="color: #333; margin-bottom: 15px;">Sugar</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                                    <div>
+                                        <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #333;">Price (₱)</label>
+                                        <input type="number" id="price_sugar" value="65" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; color: #222;">
+                                    </div>
+                                    <div>
+                                        <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #333;">Stock</label>
+                                        <input type="number" id="stock_sugar" value="45" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; color: #222;">
+                                    </div>
+                                    <div>
+                                        <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #333;">Unit</label>
+                                        <input type="text" id="unit_sugar" value="kg" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; color: #222;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin: 20px 0; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                                <h4 style="color: #333; margin-bottom: 15px;">Instant Noodles</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                                    <div>
+                                        <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #333;">Price (₱)</label>
+                                        <input type="number" id="price_noodles" value="12" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; color: #222;">
+                                    </div>
+                                    <div>
+                                        <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #333;">Stock</label>
+                                        <input type="number" id="stock_noodles" value="200" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; color: #222;">
+                                    </div>
+                                    <div>
+                                        <label style="display: block; margin-bottom: 5px; font-size: 0.9em; color: #333;">Unit</label>
+                                        <input type="text" id="unit_noodles" value="pack" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; color: #222;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="saveProductSettings()" style="padding: 12px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px;">Update All Products</button>
+                    </div>
+
+                    <div class="dashboard-card" style="max-width: 600px; margin: 0 auto 20px;">
+                        <h3>🏪 Store Settings</h3>
+                        <div style="margin: 20px 0;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Store Name</label>
+                            <input type="text" id="storeName" value="Emi's Sari Sari Store" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; color: #222;">
+                        </div>
+                        <div style="margin: 20px 0;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Welcome Message</label>
+                            <textarea id="welcomeMsg" rows="3" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; color: #222;">👋 Hello! Welcome to Emi's Sari Sari Store! I'm your 24/7 assistant. How can I help you today?</textarea>
+                        </div>
+                        <div style="margin: 20px 0;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Delivery Fee (for orders below ₱500)</label>
+                            <input type="number" id="deliveryFee" value="50" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; color: #222;">
+                        </div>
+                        <div style="margin: 20px 0;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Free Delivery Minimum</label>
+                            <input type="number" id="freeDeliveryMin" value="500" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; color: #222;">
+                        </div>
+                        <button onclick="saveStoreSettings()" style="padding: 12px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%;">Save Store Settings</button>
+                    </div>
+
+                    <div class="dashboard-card" style="max-width: 600px; margin: 0 auto;">
+                        <h3>🔔 Notification Settings</h3>
+                        <div style="margin: 20px 0;">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #333;">
+                                <input type="checkbox" id="notifyNewOrder" checked style="width: 20px; height: 20px;">
+                                <span>Notify on new orders</span>
+                            </label>
+                        </div>
+                        <div style="margin: 20px 0;">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #333;">
+                                <input type="checkbox" id="notifyLowStock" checked style="width: 20px; height: 20px;">
+                                <span>Alert when stock is low</span>
+                            </label>
+                        </div>
+                        <div style="margin: 20px 0;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Notification Mobile Number</label>
+                            <input type="text" id="notifyNumber" value="09289258127" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; color: #222;">
+                        </div>
+                        <button onclick="saveNotificationSettings()" style="padding: 12px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%;">Save Notification Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store data
+        const products = {
+            rice: { name: 'Premium Rice', price: 58, unit: 'kg', stock: 150 },
+            oil: { name: 'Cooking Oil', price: 135, unit: 'L', stock: 8 },
+            sugar: { name: 'Sugar', price: 65, unit: 'kg', stock: 45 },
+            noodles: { name: 'Instant Noodles', price: 12, unit: 'pack', stock: 200 }
+        };
+
+        let cart = {};
+        let orderNumber = 1001;
+        let totalSales = 2450;
+        let monthSales = 105230;
+        let gcashNumber = '09289258127';
+        let gcashName = "Emi's Sari Sari Store";
+
+        function switchMode(mode) {
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+            
+            if (mode === 'customer') {
+                document.querySelectorAll('.mode-btn')[0].classList.add('active');
+                document.getElementById('customerView').classList.add('active');
+            } else if (mode === 'admin') {
+                document.querySelectorAll('.mode-btn')[1].classList.add('active');
+                document.getElementById('adminView').classList.add('active');
+            } else if (mode === 'settings') {
+                document.querySelectorAll('.mode-btn')[2].classList.add('active');
+                document.getElementById('settingsView').classList.add('active');
+            }
+        }
+
+        function saveGCashSettings() {
+            gcashNumber = document.getElementById('gcashNumber').value;
+            gcashName = document.getElementById('gcashName').value;
+            alert('✅ GCash settings saved successfully!');
+        }
+
+        function saveStoreSettings() {
+            alert('✅ Store settings saved successfully!');
+        }
+
+        function saveProductSettings() {
+            // Update all products
+            products.rice.price = parseFloat(document.getElementById('price_rice').value);
+            products.rice.stock = parseInt(document.getElementById('stock_rice').value);
+            products.rice.unit = document.getElementById('unit_rice').value;
+            
+            products.oil.price = parseFloat(document.getElementById('price_oil').value);
+            products.oil.stock = parseInt(document.getElementById('stock_oil').value);
+            products.oil.unit = document.getElementById('unit_oil').value;
+            
+            products.sugar.price = parseFloat(document.getElementById('price_sugar').value);
+            products.sugar.stock = parseInt(document.getElementById('stock_sugar').value);
+            products.sugar.unit = document.getElementById('unit_sugar').value;
+            
+            products.noodles.price = parseFloat(document.getElementById('price_noodles').value);
+            products.noodles.stock = parseInt(document.getElementById('stock_noodles').value);
+            products.noodles.unit = document.getElementById('unit_noodles').value;
+            
+            // Update inventory display in dashboard
+            updateInventoryDisplay();
+            
+            alert('✅ All product prices and stock updated successfully!');
+        }
+
+        function updateInventoryDisplay() {
+            const inventoryDiv = document.getElementById('productsInventory');
+            inventoryDiv.innerHTML = `
+                <div class="product-admin-card">
+                    <h4>${products.rice.name}</h4>
+                    <p style="font-size: 1.2em; font-weight: bold; color: #764ba2;">₱${products.rice.price}/${products.rice.unit}</p>
+                    <p style="color: #666;">Stock: ${products.rice.stock}${products.rice.unit}</p>
+                </div>
+                <div class="product-admin-card">
+                    <h4>${products.oil.name}</h4>
+                    <p style="font-size: 1.2em; font-weight: bold; color: #764ba2;">₱${products.oil.price}/${products.oil.unit}</p>
+                    <p style="color: ${products.oil.stock < 10 ? '#f57c00' : '#666'};">Stock: ${products.oil.stock}${products.oil.unit} ${products.oil.stock < 10 ? '⚠️' : ''}</p>
+                </div>
+                <div class="product-admin-card">
+                    <h4>${products.sugar.name}</h4>
+                    <p style="font-size: 1.2em; font-weight: bold; color: #764ba2;">₱${products.sugar.price}/${products.sugar.unit}</p>
+                    <p style="color: #666;">Stock: ${products.sugar.stock}${products.sugar.unit}</p>
+                </div>
+                <div class="product-admin-card">
+                    <h4>${products.noodles.name}</h4>
+                    <p style="font-size: 1.2em; font-weight: bold; color: #764ba2;">₱${products.noodles.price}/${products.noodles.unit}</p>
+                    <p style="color: #666;">Stock: ${products.noodles.stock} ${products.noodles.unit}</p>
+                </div>
+            `;
+        }
+
+        function addBotMessage(message, isHtml = false) {
+            const chatArea = document.getElementById('chatArea');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'bot-message';
+            
+            if (isHtml) {
+                msgDiv.innerHTML = message;
+            } else {
+                msgDiv.textContent = message;
+            }
+            
+            chatArea.appendChild(msgDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function addUserMessage(message) {
+            const chatArea = document.getElementById('chatArea');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'user-message';
+            msgDiv.textContent = message;
+            chatArea.appendChild(msgDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function quickAction(action) {
+            addUserMessage(action);
+            
+            setTimeout(() => {
+                if (action === 'Browse Products') {
+                    showProducts();
+                } else if (action === 'View Cart') {
+                    showCart();
+                } else if (action === 'Check Delivery') {
+                    addBotMessage('🚚 Delivery Information:\n\n• Free delivery for orders ₱500+\n• ₱50 delivery fee for orders below ₱500\n• Delivery within 30-60 minutes\n• Available 24/7!');
+                }
+            }, 500);
+        }
+
+        function showProducts() {
+            let html = '📦 Available Products:<br><br>';
+            
+            for (let key in products) {
+                const p = products[key];
+                html += `
+                    <div class="product-card-inline">
+                        <h3>${p.name}</h3>
+                        <div class="price">₱${p.price}/${p.unit}</div>
+                        <div class="stock">In stock: ${p.stock}${p.unit}</div>
+                        <div class="quick-actions">
+                            <button class="quick-btn" onclick="addToCart('${key}', 1)">Add 1</button>
+                            <button class="quick-btn" onclick="addToCart('${key}', 2)">Add 2</button>
+                            <button class="quick-btn" onclick="addToCart('${key}', 5)">Add 5</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            addBotMessage(html, true);
+        }
+
+        function addToCart(productKey, quantity) {
+            if (!cart[productKey]) {
+                cart[productKey] = 0;
+            }
+            cart[productKey] += quantity;
+            
+            const p = products[productKey];
+            addUserMessage(`Add ${quantity} ${p.unit} of ${p.name}`);
+            
+            setTimeout(() => {
+                addBotMessage(`✅ Added ${quantity} ${p.unit} of ${p.name} to your cart! (₱${p.price * quantity})\n\nType "View Cart" to see your order or "Checkout" when ready!`);
+            }, 500);
+        }
+
+        function showCart() {
+            if (Object.keys(cart).length === 0) {
+                addBotMessage('🛒 Your cart is empty. Browse products to start shopping!');
+                return;
+            }
+
+            let html = '<div class="cart-summary"><h4>🛒 Your Cart:</h4>';
+            let total = 0;
+            
+            for (let key in cart) {
+                const p = products[key];
+                const itemTotal = p.price * cart[key];
+                total += itemTotal;
+                html += `<div class="cart-item"><span>${p.name} (${cart[key]} ${p.unit})</span><span>₱${itemTotal}</span></div>`;
+            }
+            
+            const deliveryFee = total >= 500 ? 0 : 50;
+            html += `<div class="cart-item"><span>Delivery Fee</span><span>₱${deliveryFee}</span></div>`;
+            html += `<div class="cart-total">Total: ₱${total + deliveryFee}</div>`;
+            html += '<div class="quick-actions" style="margin-top: 15px;"><button class="quick-btn" onclick="checkout()">✅ Checkout Now</button><button class="quick-btn" onclick="clearCart()">🗑️ Clear Cart</button></div>';
+            html += '</div>';
+            
+            addBotMessage(html, true);
+        }
+
+        function clearCart() {
+            cart = {};
+            addBotMessage('🗑️ Cart cleared! Ready to start a new order.');
+        }
+
+        function checkout() {
+            if (Object.keys(cart).length === 0) {
+                addBotMessage('Your cart is empty!');
+                return;
+            }
+
+            let total = 0;
+            let orderDetails = '';
+            
+            for (let key in cart) {
+                const p = products[key];
+                const itemTotal = p.price * cart[key];
+                total += itemTotal;
+                orderDetails += `${p.name} (${cart[key]} ${p.unit}), `;
+            }
+            
+            const deliveryFee = total >= 500 ? 0 : 50;
+            const finalTotal = total + deliveryFee;
+            
+            // Show GCash payment instructions
+            addUserMessage('Checkout');
+            
+            setTimeout(() => {
+                let paymentHtml = `
+                    <div class="cart-summary">
+                        <h4>💳 Payment Instructions</h4>
+                        <p style="margin: 10px 0; font-weight: 600;">Send payment via GCash:</p>
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                            <p style="font-size: 1.1em; font-weight: bold; color: #764ba2; margin-bottom: 5px;">GCash Number:</p>
+                            <p style="font-size: 1.3em; font-weight: bold; color: #667eea;">${gcashNumber}</p>
+                            <p style="font-size: 1em; margin-top: 5px;">Account Name: ${gcashName}</p>
+                        </div>
+                        <div style="background: #fff9c4; padding: 12px; border-radius: 8px; margin: 10px 0;">
+                            <p style="font-weight: bold; color: #f57c00;">Amount to Pay: ₱${finalTotal}</p>
+                        </div>
+                        <p style="font-size: 0.9em; color: #666; margin-top: 10px;">After payment, please send your GCash receipt screenshot here for confirmation.</p>
+                    </div>
+                `;
+                addBotMessage(paymentHtml, true);
+                
+                // Update admin dashboard
+                orderNumber++;
+                totalSales += finalTotal;
+                monthSales += finalTotal;
+                document.getElementById('todaySales').textContent = '₱' + totalSales.toLocaleString();
+                document.getElementById('monthSales').textContent = '₱' + monthSales.toLocaleString();
+                
+                // Add to orders list
+                const ordersList = document.getElementById('ordersList');
+                const newOrder = document.createElement('div');
+                newOrder.className = 'order-item';
+                newOrder.innerHTML = `
+                    <div>
+                        <strong>Order #${orderNumber}</strong>
+                        <p style="color: #888; margin-top: 5px;">Customer - ${orderDetails.slice(0, -2)}</p>
+                        <small style="color: #999;">Just now - Awaiting GCash Payment</small>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: bold; color: #764ba2; margin-bottom: 5px;">₱${finalTotal}</div>
+                        <span class="status-badge status-new">Pending Payment</span>
+                    </div>
+                `;
+                ordersList.insertBefore(newOrder, ordersList.firstChild);
+                
+                setTimeout(() => {
+                    addBotMessage(`✅ Order #${orderNumber} created!\n\n📦 Items: ${orderDetails.slice(0, -2)}\n💰 Total: ₱${finalTotal}\n\nPlease send payment to GCash number ${gcashNumber} and share your receipt. Thank you!`);
+                }, 1000);
+                
+                cart = {};
+            }, 500);
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addUserMessage(message);
+            input.value = '';
+            
+            setTimeout(() => {
+                const lowerMsg = message.toLowerCase();
+                
+                if (lowerMsg.includes('product') || lowerMsg.includes('browse') || lowerMsg.includes('available') || lowerMsg.includes('buy')) {
+                    showProducts();
+                } else if (lowerMsg.includes('cart')) {
+                    showCart();
+                } else if (lowerMsg.includes('checkout') || lowerMsg.includes('order')) {
+                    checkout();
+                } else if (lowerMsg.includes('delivery') || lowerMsg.includes('shipping')) {
+                    addBotMessage('🚚 Delivery Information:\n\n• Free delivery for orders ₱500+\n• ₱50 delivery fee for orders below ₱500\n• Delivery within 30-60 minutes\n• Available 24/7!');
+                } else if (lowerMsg.includes('hello') || lowerMsg.includes('hi')) {
+                    addBotMessage('Hello! How can I help you today? Type "Browse Products" to see what we have!');
+                } else {
+                    addBotMessage('I can help you with:\n• Browsing products\n• Checking your cart\n• Delivery information\n• Placing orders\n\nWhat would you like to do?');
+                }
+            }, 500);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Simulate real-time updates
+        setInterval(() => {
+            const randomIncrease = Math.floor(Math.random() * 200) + 50;
+            totalSales += randomIncrease;
+            document.getElementById('todaySales').textContent = '₱' + totalSales.toLocaleString();
+        }, 30000);
+    </script>
+</body>
+</html>
